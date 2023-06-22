@@ -1,16 +1,14 @@
 package com.ecommerce.ejadaproject.walletservice.configuration;
-/*
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.ecommerce.ejadaproject.walletservice.services.CustomUserDetailsService;
 
@@ -31,15 +29,16 @@ public class WebSecurityConfig  {
 	    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	        http.
 	         authorizeRequests()
-            .requestMatchers("/users").authenticated()
+            //.requestMatchers("/users").authenticated()
             .anyRequest().permitAll()
             .and()
             .formLogin()
                 .usernameParameter("email")
-                .defaultSuccessUrl("/")
+                .defaultSuccessUrl("/wallet-service/users/")
                 .permitAll()
             .and()
-            .logout().logoutSuccessUrl("/").permitAll();;
+            .logout().logoutSuccessUrl("/").permitAll().and()
+            .csrf().disable();
 	        return http.build();
 	    }
 
@@ -51,4 +50,4 @@ public class WebSecurityConfig  {
 	    }
 	    
 
-}*/
+}

@@ -1,6 +1,6 @@
 package com.ecommerce.ejadaproject.walletservice.models;
 
-/*
+
 
 import java.util.Collection;
 
@@ -54,4 +54,4 @@ public class CustomUserDetails implements UserDetails {
         return user.getFirstName() + " " + user.getLastName();
     }
  
-}*/
+}
