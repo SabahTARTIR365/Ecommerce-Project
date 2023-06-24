@@ -31,6 +31,9 @@ public class ApiGatewayConfiguration {
 			.uri("lb://inventory-service"))
 	.route(p -> p.path("/wallet-service/**")
 			.uri("lb://wallet-service"))
+    .route("login_route", r -> r
+            .path("/login")
+            .uri("lb://wallet-service"))
 	
     .route(r -> r.path("/swagger-ui/**")
             .filters(f -> f.rewritePath("/swagger-ui/(?<segment>.*)", "/swagger-ui/${segment}"))
