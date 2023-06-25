@@ -7,5 +7,5 @@ import com.ecommerce.ejadaproject.shopservice.models.CartItem;
 
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
-    // You can add custom query methods here if needed
+    
 }

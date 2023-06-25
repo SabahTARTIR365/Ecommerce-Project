@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecommerce.ejadaproject.shopservice.exceptions.ProductOutOfStockException;
 import com.ecommerce.ejadaproject.shopservice.models.Cart;
 import com.ecommerce.ejadaproject.shopservice.models.CartItem;
-import com.ecommerce.ejadaproject.shopservice.services.CartItemService;
 import com.ecommerce.ejadaproject.shopservice.services.CartService;
 
 @RestController
@@ -26,8 +25,6 @@ public class CartController {
     @Autowired
     private CartService cartService;
     
-    @Autowired
-    private CartItemService cartItemService;
 
     @GetMapping
     public ResponseEntity<List<Cart>> getAllCarts() {

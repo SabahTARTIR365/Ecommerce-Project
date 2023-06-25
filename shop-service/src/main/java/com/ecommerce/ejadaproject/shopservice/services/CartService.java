@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ecommerce.ejadaproject.shopservice.exceptions.CartNotFoundException;
 import com.ecommerce.ejadaproject.shopservice.exceptions.ProductOutOfStockException;
 import com.ecommerce.ejadaproject.shopservice.models.Cart;
 import com.ecommerce.ejadaproject.shopservice.models.CartItem;
@@ -15,95 +16,96 @@ import com.ecommerce.ejadaproject.shopservice.repositories.CartRepository;
 @Service
 public class CartService {
 
-    @Autowired
-    private CartRepository cartRepository;
-    
-    @Autowired
-    ProductProxy productProxy;
-    @Autowired
-    CartItemService cartItemService;
+	@Autowired
+	private CartRepository cartRepository;
 
-    public List<Cart> getAllCarts() {
-        return cartRepository.findAll();
-    }
+	@Autowired
+	ProductProxy productProxy;
+	@Autowired
+	CartItemService cartItemService;
 
-    public Cart getCartById(Long id) {
-        return cartRepository.findById(id).orElse(null);
-    }
+	public List<Cart> getAllCarts() {
+		return cartRepository.findAll();
+	}
 
-    Cart getCartByUserId(Long userId) {
-    	
-    	 return cartRepository.findByUserId(userId);
-    	
-    }
-    public Cart createCart(Cart cart) {
-        return cartRepository.save(cart);
-    }
+	public Cart getCartById(Long id) {
+		return cartRepository.findById(id).orElseThrow(() -> new CartNotFoundException("Cart is not found"));
+	}
 
-    public Cart updateCart(Long id, Cart cart) {
-        Cart existingCart = cartRepository.findById(id).orElse(null);
-        if (existingCart != null) {
-            cart.setId(id);
-            return cartRepository.save(cart);
-        }
-        return null;
-    }
+	Cart getCartByUserId(Long userId) {
 
-    public boolean deleteCart(Long id) {
-        if (cartRepository.existsById(id)) {
-            cartRepository.deleteById(id);
-            return true;
-        }
-        return false;
-    }
+		return cartRepository.findByUserId(userId);
 
-    public Cart addItemToCart(Long cartId, CartItem cartItem) throws ProductOutOfStockException {
-        Cart cart = cartRepository.findById(cartId).orElse(null);
-        if (cart != null) {
-        	
-        	cartItem.setCart(cart);
-        	//cartItemService.createCartItem(cartItem);
-          List<CartItem> newCartItems= cart.getItems();
-         Product currentProduct=productProxy.getProductById(cartItem.getProductId()).getBody();
-         if (currentProduct.getQuantity()>0)
-         { newCartItems.add(cartItem);
-        	cart.setItems(newCartItems);
-           // cartItemService.createCartItem(cartItem);
-            return cartRepository.save(cart);}
-         
-         else {throw new ProductOutOfStockException("Product is out of stock");}
-        }
-        return null;
-    }
+	}
 
-    public Cart removeItemFromCart(Long cartId, Long itemId) {
-        Cart cart = cartRepository.findById(cartId).orElse(null);
-        if (cart != null) {
-           cartItemService.deleteCartItem(itemId);
-            cart.getItems().removeIf(item -> item.getId().equals(itemId));
-            
-          
-            return cartRepository.save(cart);
-        }
-        return null;
-    }
-    
-    
-    public double getTotalPrice(Long cartId) throws Exception {
-        return cartRepository.findById(cartId).map(cart -> {
-            double totalPrice = 0.0;
-            double cartItemPrice=0.0;
-            
-            for (CartItem cartItem : cart.getItems()) {
-           Product product =productProxy.getProductById(cartItem.getProductId()).getBody();
-           System.out.println("Product--------------");
-           System.out.println(product);
-        	cartItemPrice=product.getPrice();
-                totalPrice +=  cartItemPrice* cartItem.getQuantity();
-            }
-            return totalPrice;
-        }).orElseThrow(() -> new Exception("Cart not found"));
-    }
+	public Cart createCart(Cart cart) {
+		return cartRepository.save(cart);
+	}
+
+	public Cart updateCart(Long id, Cart cart) {
+		return cartRepository.findById(id).map(existingCart -> {
+			existingCart.setId(id);
+			return cartRepository.save(existingCart);
+		}).orElseThrow(() -> new CartNotFoundException("Cart is not found"));
+
+	}
+
+	public boolean deleteCart(Long id) {
+	    return cartRepository.findById(id)
+	            .map(existingCart -> {
+	                cartRepository.deleteById(id);
+	                return true;
+	            })
+	            .orElse(false);
+	}
+
+
+	public Cart addItemToCart(Long cartId, CartItem cartItem) throws ProductOutOfStockException {
+		Cart cart = cartRepository.findById(cartId).orElse(null);
+		if (cart != null) {
+
+			cartItem.setCart(cart);
+
+			List<CartItem> newCartItems = cart.getItems();
+			Product currentProduct = productProxy.getProductById(cartItem.getProductId()).getBody();
+			if (currentProduct.getQuantity() > 0) {
+				newCartItems.add(cartItem);
+				cart.setItems(newCartItems);
+				return cartRepository.save(cart);
+			}
+
+			else {
+				throw new ProductOutOfStockException("Product is out of stock");
+			}
+		}
+		throw new CartNotFoundException("Cart is not found");
+	}
+
+	public Cart removeItemFromCart(Long cartId, Long itemId) throws CartNotFoundException {
+	    return cartRepository.findById(cartId)
+	            .map(cart -> {
+	                cartItemService.deleteCartItem(itemId);
+	                cart.getItems().removeIf(item -> item.getId().equals(itemId));
+	                return cartRepository.save(cart);
+	            })
+	            .orElseThrow(() -> new CartNotFoundException("Cart is not found"));
+	}
+
+
+	public double getTotalPrice(Long cartId) throws Exception {
+		return cartRepository.findById(cartId).map(cart -> {
+			double totalPrice = 0.0;
+			double cartItemPrice = 0.0;
+
+			for (CartItem cartItem : cart.getItems()) {
+				Product product = productProxy.getProductById(cartItem.getProductId()).getBody();
+				System.out.println("Product--------------");
+				System.out.println(product);
+				cartItemPrice = product.getPrice();
+				totalPrice += cartItemPrice * cartItem.getQuantity();
+			}
+			return totalPrice;
+		}).orElseThrow(() -> new CartNotFoundException("Cart is not found"));
+	}
 
 }
-
