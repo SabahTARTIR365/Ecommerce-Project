@@ -1,7 +1,5 @@
 package com.ecommerce.ejadaproject.walletservice.dto;
 
-
-
 import com.ecommerce.ejadaproject.walletservice.models.TransactionType;
 
 public class PaymentDto {
