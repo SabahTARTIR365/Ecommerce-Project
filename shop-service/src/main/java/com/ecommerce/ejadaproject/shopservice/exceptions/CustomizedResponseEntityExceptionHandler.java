@@ -8,43 +8,38 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 @ControllerAdvice
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(Exception.class)
-	public final ResponseEntity<ErrorDetails> handleAllExceptions (Exception ex, WebRequest request)throws Exception{
-	ErrorDetails errorDetails = new ErrorDetails (LocalDateTime.now(),
-	ex.getMessage(), request.getDescription(false));
-	return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+	public final ResponseEntity<ErrorDetails> handleAllExceptions(Exception ex, WebRequest request) throws Exception {
+		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	@ExceptionHandler(InsufficientAmountException.class)
-	public final ResponseEntity<ErrorDetails> handleInsufficientAmountException (Exception ex, WebRequest request)throws Exception{
-	ErrorDetails errorDetails = new ErrorDetails (LocalDateTime.now(),
-	ex.getMessage(), request.getDescription(false));
-	return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.PAYMENT_REQUIRED);
+	public final ResponseEntity<ErrorDetails> handleInsufficientAmountException(Exception ex, WebRequest request)
+			throws Exception {
+		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.PAYMENT_REQUIRED);
 	}
 
 	@ExceptionHandler(ProductOutOfStockException.class)
-	public final ResponseEntity<ErrorDetails> handleProductOutOfStockException (Exception ex, WebRequest request)throws Exception{
-	ErrorDetails errorDetails = new ErrorDetails (LocalDateTime.now(),
-	ex.getMessage(), request.getDescription(false));
-	return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.NOT_FOUND);
+	public final ResponseEntity<ErrorDetails> handleProductOutOfStockException(Exception ex, WebRequest request)
+			throws Exception {
+		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(CartNotFoundException.class)
-	public final ResponseEntity<ErrorDetails> handleCartNotFoundException (Exception ex, WebRequest request)throws Exception{
-	ErrorDetails errorDetails = new ErrorDetails (LocalDateTime.now(),
-	ex.getMessage(), request.getDescription(false));
-	return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.NOT_FOUND);
+	public final ResponseEntity<ErrorDetails> handleCartNotFoundException(Exception ex, WebRequest request)
+			throws Exception {
+		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.NOT_FOUND);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }

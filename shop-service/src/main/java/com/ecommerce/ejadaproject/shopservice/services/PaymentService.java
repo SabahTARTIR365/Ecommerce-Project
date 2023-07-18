@@ -62,15 +62,8 @@ public class PaymentService {
     	long userId=currentOrder.getUserId();
     	//find cart and clear cat items
     	Cart cart = cartService.getCartByUserId(userId);
-    	//cart.getItems().clear();
-    	//for loop to delete from cart item // need to add cartitem repo
+    	
     	List<CartItem> cartItems = cart.getItems();
-    	/*
-    	for (CartItem cartItem : cartItems) {
-    	   // cartItemRepository.delete(cartItem);
-    		cartService.removeItemFromCart(cart.getId(),cartItem.getId());
-    	}
-    	*/
     	
 		//update the quanities 
     	for (CartItem cartItem : cartItems) {

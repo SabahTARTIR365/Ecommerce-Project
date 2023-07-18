@@ -20,7 +20,7 @@ public class ProductService {
     }
 
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return productRepository.findAll();//CHECK PABABLE THING
     }
 
     public Optional<Product> getProductById(Long id) {

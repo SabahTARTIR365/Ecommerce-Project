@@ -29,7 +29,7 @@ public class WebSecurityConfig  {
 	    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	        http.
 	         authorizeRequests()
-            //.requestMatchers("/wallet-service/wallets").authenticated()
+           //.requestMatchers("/wallet-service/transactions").authenticated()
             .anyRequest().permitAll()
             .and()
             .formLogin()
