@@ -17,7 +17,7 @@ This is a sample Microservice E-commerce project built using Spring Boot. The pr
 
 2. Set up the MySQL database:
 
-    - Install MySQL and create databases named ecommerce_system_shop, ecommerce_system_wallet, and ecommerce_system_inventory.
+    - Install MySQL and create databases named ecommerce_system_shop, ecommerce_system, and ecommerce_system_inventory.
     - Configure the database connection properties in each microservice's application.properties file.
 3. Configure the Spring Cloud Config Server:
 
