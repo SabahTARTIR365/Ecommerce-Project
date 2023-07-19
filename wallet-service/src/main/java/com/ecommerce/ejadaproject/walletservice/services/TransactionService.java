@@ -52,7 +52,6 @@ public class TransactionService {
 	public Transaction updateTransaction(Long id, Transaction transaction) {
         Transaction existingTransaction = transactionRepository.findById(id).orElse(null);
         if (existingTransaction != null) {
-          //  existingTransaction.setWalletId(transaction.getWalletId());
             existingTransaction.setUserId(transaction.getUserId());
             existingTransaction.setType(transaction.getType());
             existingTransaction.setAmount(transaction.getAmount());

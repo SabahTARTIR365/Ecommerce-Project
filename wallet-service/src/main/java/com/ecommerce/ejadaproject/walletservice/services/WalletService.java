@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ecommerce.ejadaproject.walletservice.dto.TransactionDto;
 import com.ecommerce.ejadaproject.walletservice.exceptions.WalletNotFoundException;
 import com.ecommerce.ejadaproject.walletservice.models.Transaction;
 import com.ecommerce.ejadaproject.walletservice.models.TransactionType;
@@ -61,8 +62,7 @@ public class WalletService {
     }
    
   
-    public synchronized void processTransaction(Transaction transaction) {
-       //Long walletId = transaction.getWalletId();
+   /* public synchronized void processTransaction(Transaction transaction) {
         double amount = transaction.getAmount();
         TransactionType type = transaction.getType();
         
@@ -83,7 +83,41 @@ public class WalletService {
             walletRepository.save(wallet);
         }
     }
+    */
     
+    public synchronized void processTransaction(Transaction transaction) {
+        double amount = transaction.getAmount();
+        TransactionType type = transaction.getType();
+
+        Long walletId = walletRepository.findWalletIdByUserId(transaction.getUserId());
+        Wallet wallet = walletRepository.findById(walletId).orElse(null);
+
+        if (wallet != null) {
+            double currentBalance = wallet.getBalance();
+            TransactionDto transactionDto =new TransactionDto(currentBalance,amount, type);	
+            double updatedBalance = calculateUpdatedBalance(transactionDto);
+            wallet.setBalance(updatedBalance);
+            walletRepository.save(wallet);
+        }
+    }
+
+    private double calculateUpdatedBalance(  TransactionDto transactionDto) {
+    	//double currentBalance, double amount, TransactionType type) {
+    
+        switch (transactionDto.getType()) {
+            case DEPOSIT:
+                return transactionDto.getBalance() + transactionDto.getAmount();
+            case WITHDRAW:
+                if (transactionDto.getBalance() >= transactionDto.getAmount()) {
+                    return transactionDto.getBalance() - transactionDto.getAmount();
+                } else {
+                    throw new IllegalArgumentException("Not enough amount in the wallet.");
+                }
+            default:
+                throw new IllegalArgumentException("Invalid transaction type.");
+        }
+    }
+
     
     public List<Transaction> getTransactionHistory(Long walletId) {
         Optional<Wallet> walletOptional = walletRepository.findById(walletId);
