@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ecommerce.ejadaproject.walletservice.dto.TransactionDto;
 import com.ecommerce.ejadaproject.walletservice.exceptions.WalletNotFoundException;
+import com.ecommerce.ejadaproject.walletservice.exceptions.InsufficientAmountException;
 import com.ecommerce.ejadaproject.walletservice.models.Transaction;
 import com.ecommerce.ejadaproject.walletservice.models.TransactionType;
 import com.ecommerce.ejadaproject.walletservice.models.Wallet;
@@ -61,29 +62,6 @@ public class WalletService {
         return walletRepository.findWalletIdByUserId(userId);
     }
    
-  
-   /* public synchronized void processTransaction(Transaction transaction) {
-        double amount = transaction.getAmount();
-        TransactionType type = transaction.getType();
-        
-       Long walletId= walletRepository.findWalletIdByUserId(transaction.getUserId());
-        Wallet wallet = walletRepository.findById(walletId).orElse(null);
-        if (wallet != null) {
-            double currentBalance =wallet.getBalance(); //getWalletBalanceByTransaction(wallet);
-            double updatedBalance=0.0;
-
-            if (type == TransactionType.DEPOSIT) {
-                updatedBalance = currentBalance + amount;
-            } else if (type == TransactionType.WITHDRAW) {
-            	if(currentBalance>amount)
-            	{ updatedBalance = currentBalance - amount;}//else through exception not enough amount
-            } 
-
-            wallet.setBalance(updatedBalance);
-            walletRepository.save(wallet);
-        }
-    }
-    */
     
     public synchronized void processTransaction(Transaction transaction) {
         double amount = transaction.getAmount();
@@ -102,7 +80,6 @@ public class WalletService {
     }
 
     private double calculateUpdatedBalance(  TransactionDto transactionDto) {
-    	//double currentBalance, double amount, TransactionType type) {
     
         switch (transactionDto.getType()) {
             case DEPOSIT:
@@ -111,7 +88,7 @@ public class WalletService {
                 if (transactionDto.getBalance() >= transactionDto.getAmount()) {
                     return transactionDto.getBalance() - transactionDto.getAmount();
                 } else {
-                    throw new IllegalArgumentException("Not enough amount in the wallet.");
+                    throw new InsufficientAmountException("Not enough amount in the wallet.");
                 }
             default:
                 throw new IllegalArgumentException("Invalid transaction type.");
