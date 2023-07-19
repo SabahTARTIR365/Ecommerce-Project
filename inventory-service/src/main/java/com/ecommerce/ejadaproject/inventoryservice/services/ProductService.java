@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.ejadaproject.inventoryservice.beans.Product;
@@ -20,9 +22,12 @@ public class ProductService {
     }
 
     public List<Product> getAllProducts() {
-        return productRepository.findAll();//CHECK PABABLE THING
+        return productRepository.findAll();//CHECK PAGABLE THING
     }
-
+    	
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
