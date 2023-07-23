@@ -16,19 +16,25 @@ This is a sample Microservice E-commerce project built using Spring Boot. The pr
 1. Clone the repository to your local machine.
 
 2. Set up the MySQL database:
+   
+    - Open MySQL Workbench and connect to your MySQL server.
+    - Click on your preferred connection under "MySQL Connections."
+    - Open the "Query" tab.
+    - Paste and run the following SQL command:
+     ``` CREATE SCHEMA IF NOT EXISTS springstudent; ```
 
     - Install MySQL and create databases named ecommerce_system_shop, ecommerce_system, and ecommerce_system_inventory.
     - Configure the database connection properties in each microservice's application.properties file.
-3. Configure the Spring Cloud Config Server:
+4. Configure the Spring Cloud Config Server:
 
    - Open the application.properties file in the Config Server project and set the path to your remote GitHub repository containing the configuration files for the microservices.
    - Import the project into your IDE and run each microservice using Spring Boot's built-in run configuration.
 
-4. Alternatively, use Docker Compose to deploy the entire application:
+5. Alternatively, use Docker Compose to deploy the entire application:
 
      - Open a terminal and navigate to the project directory.
      - Run the following command to start the services: docker-compose up.
-5. Once the services are running, you can access the following endpoints:
+6. Once the services are running, you can access the following endpoints:
    
    - Inventory Service API: http://localhost:9001/api/inventory-service
    - Shop Service API: http://localhost:9002/shop-service
